@@ -3,7 +3,7 @@
 #include "../inc/maxSubarray.hh"
 #include "../inc/arrayClass.hh"
 
-int main()
+int main(int argc, char** argv)
 { 
     int a1 = 5;
     int a2 = 8;
@@ -14,8 +14,12 @@ int main()
     std::cout << firstMatrix.isPowerTwo() << std::endl;
     std::cout << secondMatrix.isPowerTwo() << std::endl;
 
+    firstMatrix.readNewArray(argv[1]);
+
     std::cout << "Rows left: " << firstMatrix.rowsLeft() << std::endl;
     std::cout << "Rows left, second matrix: " << secondMatrix.rowsLeft() << std::endl;
+
+    arrayClass thirdMatrix(-2);
 
     return 0;
 }

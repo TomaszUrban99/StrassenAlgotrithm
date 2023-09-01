@@ -3,22 +3,33 @@
 
 #include <iostream>
 #include <fstream>
-
-#include <boost/interprocess/file_mapping.hpp>
-#include <boost/interprocess/mapped_region.hpp>
+#include <cerrno>
+#include <cstring>
+#include <exception>
 
 class arrayClass {
 
-    int **_arrayData;
+    int **_arrayData = NULL;
 
-    /* Attributes for storing dimensions of array */
-    int _rowNumber;
+    /* Attribute for storing dimensions of array */
+    int _dimensions;
 
-    int _colNumber;
+    int allocateMemory();
 
     public:
 
     arrayClass( int arraySize );
+    arrayClass () = default;
+
+    ~arrayClass () {
+
+        if ( _arrayData != NULL)
+        {
+            for ( int i = 0; i < _dimensions; ++i )
+                delete [] _arrayData[i]; 
+        }
+
+    }
 
     void readNewArray ( char *filenameData );
 
