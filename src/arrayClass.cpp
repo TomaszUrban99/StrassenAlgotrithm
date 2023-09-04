@@ -1,4 +1,5 @@
 #include "../inc/arrayClass.hh"
+#include <boost/move/detail/type_traits.hpp>
 #include <fstream>
 #include <scoped_allocator>
 
@@ -15,16 +16,24 @@ arrayClass::arrayClass ( int arraySize )
     }
 
     _dimensions = arraySize;
+
+    allocateMemory();
+
 }
 
 int arrayClass::allocateMemory()
 {
-    /* Allocate memory block of size _dimensions */
-    _arrayData = new int*[_dimensions];
+    _fullDimension = _dimensions + rowsLeft();
 
-    for ( int i = 0; i < _dimensions; ++i)
+    /* Allocate memory block of size _dimensions */
+    _arrayData = new int*[_fullDimension];
+
+    std::cout << "Full dimension: " << _fullDimension << std::endl;
+    std::cout << "Rows left: " << rowsLeft() << std::endl;
+
+    for ( int i = 0; i < _fullDimension; ++i)
     {
-        _arrayData[i] = new int[_dimensions];
+        _arrayData[i] = new int[_fullDimension];
         
         if (_arrayData[i] == NULL )
             return -1;
@@ -78,18 +87,42 @@ void arrayClass::readNewArray(char *filenameData )
     fileHandle >> _dimensions;
 
     /* Allocate memory for read _dimensions of an array */
-    allocateMemory();
+    if(_arrayData == NULL)
+    {
+        allocateMemory();
+    }
 
     while (!fileHandle.eof())
     {
-        for ( int i = 0; i < _dimensions; ++i )
+        for ( int i = 0; i < _fullDimension; ++i )
         {
-            for ( int j = 0; j < _dimensions; ++j )
+            for ( int j = 0; j < _fullDimension; ++j )
             {
-                fileHandle >> _arrayData[i][j];
+                if ( j >=  _dimensions || i >= _dimensions)
+                    _arrayData[i][j] = 0;
+                else {
+                    fileHandle >> _arrayData[i][j];
+                }
+                
             }
         }
     }
+}
 
+void arrayClass::print()
+{
+    for ( int i = 0; i < _fullDimension; ++i )
+    {
+        for ( int j = 0; j < _fullDimension; ++j )
+            {
+                std::cout << _arrayData[i][j] << " ";
+            }
+        std::cout << std::endl;
+    }
+}
+
+arrayClass arrayClass::add_subarray(    int beginFirst, int endFirst,
+                                        int beginSecond, int endSecond )
+{
 
 }

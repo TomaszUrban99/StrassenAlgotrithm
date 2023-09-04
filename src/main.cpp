@@ -19,6 +19,8 @@ int main(int argc, char** argv)
     std::cout << "Rows left: " << firstMatrix.rowsLeft() << std::endl;
     std::cout << "Rows left, second matrix: " << secondMatrix.rowsLeft() << std::endl;
 
+    firstMatrix.print();
+
     arrayClass thirdMatrix(-2);
 
     return 0;
