@@ -12,9 +12,9 @@ add_library(maxSubarrayClass src/maxSubarray.cpp)
 target_link_directories(maxSubarrayClass PUBLIC inc/)
 target_link_libraries(maxSubarrayClass LINK_PUBLIC randomInputData)
 
-add_library(arrayClass src/arrayClass.cpp)
-target_link_directories(arrayClass PUBLIC inc/)
+add_library(matrix src/matrix.cpp)
+target_link_directories(matrix PUBLIC inc/)
 
 add_executable(strassen src/main.cpp)
 target_link_directories(strassen PUBLIC inc/)
-target_link_libraries(strassen LINK_PUBLIC maxSubarrayClass arrayClass)
+target_link_libraries(strassen LINK_PUBLIC maxSubarrayClass matrix)
