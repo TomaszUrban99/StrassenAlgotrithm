@@ -2,6 +2,7 @@
 #include <fstream>
 #include <ostream>
 #include <pthread.h>
+#include <vector>
 
 void matrix::readData(std::istream &fileHandle)
 {
@@ -103,33 +104,101 @@ void matrix::print(std::ostream &outputStream)
     }
 }
 
-matrix matrix::substractSubmatrices(    int firstMatrixRow, int firstMatrixCol,
-                                        int secondMatrixRow, int secondMatrixCol )
+matrix& matrix::substractSubmatrices(    matrix& resultMatrix, std::vector<int> &code )
 {
-    int split = _rows/2;
+    int split = resultMatrix.getRows();
 
-    /* Create new matrix */
-    matrix newMatrix ( _rows/2, _cols/2 );
+    int startPointFirstRow = code[0] * split;
+    int startPointFirstCol = code[1] * split;
 
-    int startPointFirstRow = firstMatrixRow * split;
-    int startPointFirstCol = firstMatrixCol * split;
-
-    int startPointSecondRow = secondMatrixRow * split;
-    int startPointSecondCol = secondMatrixCol * split; 
+    int startPointSecondRow = code[2] * split;
+    int startPointSecondCol = code[3] * split; 
 
     for ( int i = 0; i < split; ++i ){
         for ( int j = 0; j < split; ++j ){
             
-            (newMatrix.getMatrixData())[i][j] = 
+            (resultMatrix.getMatrixData())[i][j] = 
                 _matrixData[startPointFirstRow+i][startPointFirstCol+j] 
                 - _matrixData[startPointSecondRow + i][startPointSecondCol + j];
         }
     }
 
-    return newMatrix;
+    return resultMatrix;
+}
+
+matrix& matrix::addSubmatrices(  matrix& resultMatrix, std::vector<int> &code )
+{
+    int split = resultMatrix.getRows();
+
+    int startPointFirstRow = code[0] * split;
+    int startPointFirstCol = code[1] * split;
+
+    int startPointSecondRow = code[2] * split;
+    int startPointSecondCol = code[3] * split; 
+
+    for ( int i = 0; i < split; ++i ){
+        for ( int j = 0; j < split; ++j ){
+            
+            (resultMatrix.getMatrixData())[i][j] = 
+                _matrixData[startPointFirstRow+i][startPointFirstCol+j] 
+                + _matrixData[startPointSecondRow + i][startPointSecondCol + j];
+        }
+    }
+
+    return resultMatrix;
 }
 
 matrix matrix::strassenMultiply( matrix& matrix_A, matrix& matrix_B)
 {
+    matrix temporary (1,1);
 
+    int split = matrix_A.getRows()/2;
+    
+    std::vector<matrix*> matricesVector (10);
+    
+    /* Create instance of S matrices */
+
+    for ( int i = 0; i < 10; ++i ){
+        matricesVector[i] = new matrix(split, split);
+    }
+
+    /* S1 matrix */
+    matrix_B.substractSubmatrices(*matricesVector[0], _strassenSMatrices[0]);
+    /* S2 matrix */
+    matrix_A.addSubmatrices(*matricesVector[1], _strassenSMatrices[1]);
+    /* S3 matrix */
+    matrix_A.addSubmatrices(*matricesVector[2], _strassenSMatrices[2]);
+    /* S4 matrix */
+    matrix_B.substractSubmatrices(*matricesVector[3], _strassenSMatrices[3]);
+    /* S5 matrix */
+    matrix_A.addSubmatrices(*matricesVector[4], _strassenSMatrices[4]);
+    /* S6 matrix */
+    matrix_B.addSubmatrices(*matricesVector[5], _strassenSMatrices[5]);
+    /* S7 matrix */
+    matrix_A.substractSubmatrices(*matricesVector[6], _strassenSMatrices[6]);
+    /* S8 matrix */
+    matrix_B.addSubmatrices(*matricesVector[7], _strassenSMatrices[7]);
+    /* S9 matrix */
+    matrix_A.substractSubmatrices(*matricesVector[8], _strassenSMatrices[8]);
+    /* S10 matrix */
+    matrix_B.addSubmatrices(*matricesVector[9], _strassenSMatrices[9]);
+
+    std::cout << "Results: " << std::endl;
+
+    for ( int i = 0; i < 10; ++i ){
+        std::cout << "S macierz " << i << std::endl;
+        matricesVector[i]->print(std::cout);
+        std::cout << std::endl;
+    }
+    
+    for ( int i = 0; i < 10; ++i ){
+        delete matricesVector[i];
+    }
+
+    return temporary;
+}
+
+matrix matrix::squareMatrixMultiply( matrix& matrix_A, matrix& matrix_B)
+{
+    
 }
