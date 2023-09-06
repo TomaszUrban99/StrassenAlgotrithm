@@ -12,7 +12,7 @@ class matrix {
 
     int **_matrixData;
 
-    void readData(std::ifstream &fileHandle);
+    void readData(std::istream &fileHandle);
 
     public:
 
@@ -20,9 +20,16 @@ class matrix {
 
     ~matrix();
 
+    int** getMatrixData () { return _matrixData; }
+
     void readArray( char *fileName);
 
     void print ( std::ostream &outputStream);
+
+    matrix substractSubmatrices (   int firstMatrixRow, int firstMatrixCol,
+                                    int secondMatrixRow, int secondMatrixCol );
+
+    matrix strassenMultiply ( matrix &matrix_A, matrix &matrix_B);
 
 };
 

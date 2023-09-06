@@ -3,7 +3,7 @@
 #include <ostream>
 #include <pthread.h>
 
-void matrix::readData(std::ifstream &fileHandle)
+void matrix::readData(std::istream &fileHandle)
 {
     for ( int i = 0; i < _rows; ++i )
     {
@@ -101,4 +101,35 @@ void matrix::print(std::ostream &outputStream)
 
         outputStream << std::endl;
     }
+}
+
+matrix matrix::substractSubmatrices(    int firstMatrixRow, int firstMatrixCol,
+                                        int secondMatrixRow, int secondMatrixCol )
+{
+    int split = _rows/2;
+
+    /* Create new matrix */
+    matrix newMatrix ( _rows/2, _cols/2 );
+
+    int startPointFirstRow = firstMatrixRow * split;
+    int startPointFirstCol = firstMatrixCol * split;
+
+    int startPointSecondRow = secondMatrixRow * split;
+    int startPointSecondCol = secondMatrixCol * split; 
+
+    for ( int i = 0; i < split; ++i ){
+        for ( int j = 0; j < split; ++j ){
+            
+            (newMatrix.getMatrixData())[i][j] = 
+                _matrixData[startPointFirstRow+i][startPointFirstCol+j] 
+                - _matrixData[startPointSecondRow + i][startPointSecondCol + j];
+        }
+    }
+
+    return newMatrix;
+}
+
+matrix matrix::strassenMultiply( matrix& matrix_A, matrix& matrix_B)
+{
+
 }
